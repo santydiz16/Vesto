@@ -25,6 +25,7 @@ const EMPTY_PRODUCT = () => ({
   sizes: ['S','M','L'],
   priceMay: '', pricePvp: '',
   bg: BG_PRESETS[0].value,
+  image: '',
   badge: '', badgeVariant: 'accent',
   stock: '',
 });
@@ -458,8 +459,38 @@ function ProductForm({ product: initial, onSave, onCancel }) {
           </div>
         </FormField>
 
+        {/* Imagen */}
+        <FormField label="URL de imagen (opcional)">
+          <input
+            className="vesto-input"
+            value={form.image || ''}
+            onChange={e => update('image', e.target.value)}
+            placeholder="https://i.imgur.com/… o cualquier URL pública"
+            style={{ width: '100%', boxSizing: 'border-box' }}
+          />
+          {form.image && (
+            <div style={{ marginTop: 8, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <img
+                src={form.image} alt="preview"
+                style={{ width: 80, height: 100, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)', flexShrink: 0 }}
+                onError={e => { e.target.style.opacity = '0.3'; }}
+              />
+              <div style={{ fontSize: 12, color: 'var(--fg-muted)', lineHeight: 1.5, paddingTop: 4 }}>
+                <strong style={{ color: 'var(--vesto-verde-exito)' }}>✓ Imagen cargada.</strong><br/>
+                Si la URL es válida y pública, se mostrará en el catálogo.<br/>
+                El gradiente se usa como fondo de respaldo.
+              </div>
+            </div>
+          )}
+          {!form.image && (
+            <div style={{ marginTop: 6, fontSize: 12, color: 'var(--fg-subtle)', lineHeight: 1.5 }}>
+              Subí tu foto a <strong>imgbb.com</strong>, <strong>Cloudinary</strong> o Google Drive (link directo) y pegá la URL acá.
+            </div>
+          )}
+        </FormField>
+
         {/* Color de fondo */}
-        <FormField label="Color de fondo (gradiente)">
+        <FormField label="Color de fondo (gradiente de respaldo)">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
             {BG_PRESETS.map(bg => (
               <button

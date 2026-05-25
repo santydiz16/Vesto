@@ -89,13 +89,21 @@ function Input({ placeholder, value, onChange, icon, type = 'text', style }) {
 
 // ===== PRODUCT CARD =====
 function ProductCard({ product, onClick }) {
-  const { name, sizes, priceMay, pricePvp, bg, badge, badgeVariant } = product;
+  const { name, sizes, priceMay, pricePvp, bg, image, badge, badgeVariant } = product;
   const ganUnit = (pricePvp || 0) - (priceMay || 0);
   const margen  = pricePvp > 0 ? Math.round((ganUnit / pricePvp) * 100) : 0;
 
   return (
     <div className="vesto-card" style={{ padding: 0, overflow: 'hidden', cursor: 'pointer' }} onClick={onClick}>
       <div style={{ aspectRatio: '4/5', background: bg, position: 'relative' }}>
+        {/* Real photo — shown on top of gradient fallback */}
+        {image && (
+          <img
+            src={image} alt={name}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            onError={e => { e.target.style.display = 'none'; }}
+          />
+        )}
         {badge && (
           <div style={{ position: 'absolute', top: 12, left: 12 }}>
             <Badge variant={badgeVariant || 'accent'}>{badge}</Badge>

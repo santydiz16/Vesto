@@ -27,19 +27,29 @@ function Product({ onNav, productId, onAddToCart, products }) {
         <div style={{ display: 'grid', gridTemplateColumns: '7fr 5fr', gap: 56 }}>
           {/* Gallery */}
           <div>
-            <div style={{ aspectRatio: '4/5', background: product.bg, borderRadius: 12, marginBottom: 12, position: 'relative' }}>
+            <div style={{ aspectRatio: '4/5', background: product.bg, borderRadius: 12, marginBottom: 12, position: 'relative', overflow: 'hidden' }}>
+              {product.image && (
+                <img
+                  src={product.image} alt={product.name}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={e => { e.target.style.display = 'none'; }}
+                />
+              )}
               {product.badge && <div style={{ position: 'absolute', top: 16, left: 16 }}><Badge variant={product.badgeVariant}>{product.badge}</Badge></div>}
               {margen > 0 && (
                 <div style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(22,163,74,0.9)', borderRadius: 4, padding: '4px 10px', backdropFilter: 'blur(4px)' }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>+{margen}% margen</span>
                 </div>
               )}
-              <div style={{ position: 'absolute', bottom: 16, right: 16, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'rgba(245,240,232,0.5)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>FOTO 1 · principal</div>
+              {!product.image && <div style={{ position: 'absolute', bottom: 16, right: 16, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'rgba(245,240,232,0.5)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>FOTO 1 · principal</div>}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
               {[1,2,3,4].map(i => (
-                <div key={i} style={{ aspectRatio: '4/5', background: product.bg, borderRadius: 8, opacity: i === 1 ? 1 : 0.7, border: i === 1 ? '2px solid var(--vesto-noche)' : '2px solid transparent', cursor: 'pointer', position: 'relative' }}>
-                  <div style={{ position: 'absolute', bottom: 8, left: 10, fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(245,240,232,0.6)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>FOTO {i}</div>
+                <div key={i} style={{ aspectRatio: '4/5', background: product.bg, borderRadius: 8, opacity: i === 1 ? 1 : 0.7, border: i === 1 ? '2px solid var(--vesto-noche)' : '2px solid transparent', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+                  {product.image && i === 1 && (
+                    <img src={product.image} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }}/>
+                  )}
+                  {!product.image && <div style={{ position: 'absolute', bottom: 8, left: 10, fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(245,240,232,0.6)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>FOTO {i}</div>}
                 </div>
               ))}
             </div>
