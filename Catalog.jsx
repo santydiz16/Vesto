@@ -7,6 +7,9 @@ function Catalog({ onNav, products }) {
   const [priceFilters, setPriceFilters] = useState([]);
   const [sizeFilter, setSizeFilter] = useState([]);
 
+  // Use dynamic categories from localStorage (updated via Admin)
+  const catList = getCategories().filter(c => c.active !== false);
+
   const allProducts = products || PRODUCTS;
 
   const priceRanges = [
@@ -46,7 +49,7 @@ function Catalog({ onNav, products }) {
   if (sort === 'Precio: mayor a menor') visible = [...visible].sort((a, b) => b.priceMay - a.priceMay);
   if (sort === 'Mayor margen')          visible = [...visible].sort((a, b) => ((b.pricePvp - b.priceMay) / b.pricePvp) - ((a.pricePvp - a.priceMay) / a.pricePvp));
 
-  const currentCat = CATEGORIES.find(c => c.id === category) || CATEGORIES[0];
+  const currentCat = catList.find(c => c.id === category) || catList[0];
 
   return (
     <main style={{ padding: '40px var(--container-gutter) 64px' }}>
@@ -85,7 +88,7 @@ function Catalog({ onNav, products }) {
           <aside>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 16 }}>Categoría</div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 32 }}>
-              {CATEGORIES.map(c => (
+              {catList.map(c => (
                 <li key={c.id}>
                   <button onClick={() => setCategory(c.id)} style={{ background: category === c.id ? 'rgba(26,26,46,0.08)' : 'transparent', border: 'none', cursor: 'pointer', width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: 6, fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: category === c.id ? 600 : 400, color: 'var(--fg)' }}>
                     <span>{c.label}</span>

@@ -24,7 +24,43 @@ const CATEGORIES = [
   { id: 'sacos',      label: 'Sacos & abrigos', count: 73 },
 ];
 
-const PRODUCTS_KEY = 'vesto_products_v1';
+const PRODUCTS_KEY    = 'vesto_products_v1';
+const CATEGORIES_KEY  = 'vesto_categories_v1';
+const ATTRIBUTES_KEY  = 'vesto_attributes_v1';
+
+const CATEGORIES_SEED = [
+  { id: 'todos',      label: 'Todos',            emoji: '✦',  active: true },
+  { id: 'buzos',      label: 'Buzos & sweaters', emoji: '🧥', active: true },
+  { id: 'jeans',      label: 'Jeans',            emoji: '👖', active: true },
+  { id: 'vestidos',   label: 'Vestidos',         emoji: '👗', active: true },
+  { id: 'remeras',    label: 'Remeras',          emoji: '👕', active: true },
+  { id: 'camisas',    label: 'Camisas',          emoji: '👔', active: true },
+  { id: 'pantalones', label: 'Pantalones',       emoji: '🩱', active: true },
+  { id: 'polleras',   label: 'Polleras',         emoji: '🌀', active: true },
+  { id: 'sacos',      label: 'Sacos & abrigos',  emoji: '🧣', active: true },
+];
+
+function getCategories() {
+  try {
+    const s = localStorage.getItem(CATEGORIES_KEY);
+    if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length) return p; }
+  } catch(e) {}
+  return [...CATEGORIES_SEED];
+}
+function saveCategories(list) {
+  try { localStorage.setItem(CATEGORIES_KEY, JSON.stringify(list)); } catch(e) {}
+}
+
+function getAttributes() {
+  try {
+    const s = localStorage.getItem(ATTRIBUTES_KEY);
+    if (s) { const p = JSON.parse(s); if (Array.isArray(p)) return p; }
+  } catch(e) {}
+  return [];
+}
+function saveAttributes(list) {
+  try { localStorage.setItem(ATTRIBUTES_KEY, JSON.stringify(list)); } catch(e) {}
+}
 
 function getProducts() {
   try {
@@ -53,9 +89,14 @@ function resetProducts() {
 // Legacy global — used by Dashboard (mock). Updated by App via products state.
 const PRODUCTS = getProducts();
 
-window.PRODUCTS       = PRODUCTS;
-window.PRODUCTS_SEED  = PRODUCTS_SEED;
-window.CATEGORIES     = CATEGORIES;
-window.getProducts    = getProducts;
-window.saveProducts   = saveProducts;
-window.resetProducts  = resetProducts;
+window.PRODUCTS        = PRODUCTS;
+window.PRODUCTS_SEED   = PRODUCTS_SEED;
+window.CATEGORIES      = CATEGORIES;
+window.CATEGORIES_SEED = CATEGORIES_SEED;
+window.getProducts     = getProducts;
+window.saveProducts    = saveProducts;
+window.resetProducts   = resetProducts;
+window.getCategories   = getCategories;
+window.saveCategories  = saveCategories;
+window.getAttributes   = getAttributes;
+window.saveAttributes  = saveAttributes;
