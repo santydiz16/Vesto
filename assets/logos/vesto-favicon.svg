@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="VESTO favicon">
+  <rect width="32" height="32" rx="4" fill="#1A1A2E"></rect>
+  <line x1="8" y1="8" x2="24" y2="8" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="square"></line>
+  <path d="M 9 13 L 16 25 L 23 13" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"></path>
+</svg>
