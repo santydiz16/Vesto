@@ -460,33 +460,8 @@ function ProductForm({ product: initial, onSave, onCancel }) {
         </FormField>
 
         {/* Imagen */}
-        <FormField label="URL de imagen (opcional)">
-          <input
-            className="vesto-input"
-            value={form.image || ''}
-            onChange={e => update('image', e.target.value)}
-            placeholder="https://i.imgur.com/… o cualquier URL pública"
-            style={{ width: '100%', boxSizing: 'border-box' }}
-          />
-          {form.image && (
-            <div style={{ marginTop: 8, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-              <img
-                src={form.image} alt="preview"
-                style={{ width: 80, height: 100, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)', flexShrink: 0 }}
-                onError={e => { e.target.style.opacity = '0.3'; }}
-              />
-              <div style={{ fontSize: 12, color: 'var(--fg-muted)', lineHeight: 1.5, paddingTop: 4 }}>
-                <strong style={{ color: 'var(--vesto-verde-exito)' }}>✓ Imagen cargada.</strong><br/>
-                Si la URL es válida y pública, se mostrará en el catálogo.<br/>
-                El gradiente se usa como fondo de respaldo.
-              </div>
-            </div>
-          )}
-          {!form.image && (
-            <div style={{ marginTop: 6, fontSize: 12, color: 'var(--fg-subtle)', lineHeight: 1.5 }}>
-              Subí tu foto a <strong>imgbb.com</strong>, <strong>Cloudinary</strong> o Google Drive (link directo) y pegá la URL acá.
-            </div>
-          )}
+        <FormField label="Foto del producto">
+          <ImageUploader value={form.image || ''} onChange={val => update('image', val)} />
         </FormField>
 
         {/* Color de fondo */}
@@ -541,6 +516,106 @@ function ProductForm({ product: initial, onSave, onCancel }) {
           {isNew ? 'Crear producto' : 'Guardar cambios'}
         </Button>
       </div>
+    </div>
+  );
+}
+
+/* ── Image uploader with drag & drop ── */
+function ImageUploader({ value, onChange }) {
+  const [dragging, setDragging] = useState(false);
+  const [loading,  setLoading]  = useState(false);
+  const inputRef = useRef(null);
+
+  const processFile = (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    setLoading(true);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        // Resize to max 1000px on longest side, keep aspect ratio
+        const MAX = 1000;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else       { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        onChange(dataUrl);
+        setLoading(false);
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const onDrop      = (e) => { e.preventDefault(); setDragging(false); processFile(e.dataTransfer.files[0]); };
+  const onDragOver  = (e) => { e.preventDefault(); setDragging(true);  };
+  const onDragLeave = ()  => setDragging(false);
+
+  const dropZoneStyle = {
+    border: `2px dashed ${dragging ? 'var(--vesto-champagne)' : 'var(--border-strong)'}`,
+    borderRadius: 10,
+    padding: value ? '12px 16px' : '32px 16px',
+    textAlign: 'center',
+    cursor: 'pointer',
+    background: dragging ? 'rgba(201,169,110,0.07)' : 'var(--bg-card)',
+    transition: 'all 180ms',
+    userSelect: 'none',
+  };
+
+  return (
+    <div>
+      <div style={dropZoneStyle} onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave} onClick={() => !loading && inputRef.current?.click()}>
+        {loading ? (
+          <div style={{ fontSize: 13, color: 'var(--fg-muted)', padding: '8px 0' }}>Procesando imagen…</div>
+        ) : value ? (
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', textAlign: 'left' }}>
+            <img
+              src={value} alt="preview"
+              style={{ width: 72, height: 90, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)', flexShrink: 0 }}
+            />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--vesto-verde-exito)', marginBottom: 4 }}>✓ Foto cargada</div>
+              <div style={{ fontSize: 12, color: 'var(--fg-muted)', lineHeight: 1.5 }}>
+                Arrastrá otra imagen acá<br/>o hacé clic para cambiarla
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div style={{ width: 48, height: 48, borderRadius: 10, background: 'rgba(201,169,110,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+              <Icon name="upload" size={22} color="var(--vesto-champagne)" />
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>
+              Arrastrá tu foto acá
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--fg-muted)', marginBottom: 16 }}>
+              JPG, PNG, WEBP · Se comprime y redimensiona automáticamente
+            </div>
+            <button
+              type="button"
+              style={{ background: 'var(--vesto-noche)', color: 'var(--vesto-marfil)', border: 'none', borderRadius: 6, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', display: 'inline-flex', alignItems: 'center', gap: 8 }}
+              onClick={e => { e.stopPropagation(); inputRef.current?.click(); }}
+            >
+              <Icon name="upload" size={15} color="var(--vesto-marfil)" /> Elegir archivo
+            </button>
+          </div>
+        )}
+      </div>
+      <input ref={inputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { processFile(e.target.files[0]); e.target.value = ''; }} />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          style={{ marginTop: 8, background: 'transparent', border: 'none', fontSize: 12, color: 'var(--vesto-coral)', cursor: 'pointer', fontFamily: 'var(--font-body)', padding: 0, textDecoration: 'underline' }}
+        >
+          Quitar imagen
+        </button>
+      )}
     </div>
   );
 }
