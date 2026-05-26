@@ -348,6 +348,36 @@ code, kbd, pre, samp {
 .vesto-badge--ghost   { background: transparent; color: var(--fg-muted); border: 1px solid var(--border); }
 .vesto-badge--success { background: rgba(22, 163, 74, 0.12); color: var(--vesto-verde-exito); }
 
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+[data-theme="dark"] {
+  --bg:              #0F0F1A;
+  --bg-card:         #1A1A2E;
+  --bg-inverse:      #F5F0E8;
+  --fg:              #F5F0E8;
+  --fg-muted:        rgba(245,240,232,0.65);
+  --fg-subtle:       rgba(245,240,232,0.40);
+  --fg-inverse:      #1A1A2E;
+  --border:          rgba(245,240,232,0.10);
+  --border-strong:   rgba(245,240,232,0.22);
+  --border-inverse:  rgba(26,26,46,0.20);
+  --shadow-sm:       0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:       0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg:       0 12px 32px rgba(0,0,0,0.5);
+}
+[data-theme="dark"] .vesto-btn--ghost {
+  color: var(--fg);
+  border-color: var(--border-strong);
+}
+[data-theme="dark"] .vesto-btn--ghost:hover {
+  background: rgba(245,240,232,0.08);
+}
+[data-theme="dark"] body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
 /* Vesto pattern — subtle weave for accents */
 .vesto-pattern {
   background-image:

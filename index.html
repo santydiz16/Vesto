@@ -2,13 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1280">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VESTO · Plataforma mayorista de indumentaria</title>
   <link rel="icon" href="./assets/logos/vesto-favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./colors_and_type.css">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
     body { min-height: 100vh; }
-    .app { min-width: 1280px; }
+    img { max-width: 100%; }
   </style>
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -35,7 +36,6 @@
     function App() {
       const [route,    setRoute]    = useState({ screen: 'landing', id: null });
       const [cart,     setCart]     = useState([]);
-      // Products state — single source of truth. Initialized from localStorage (via getProducts).
       const [products, setProducts] = useState(() => getProducts());
 
       const onNav = (screen, id) => {
@@ -43,10 +43,13 @@
         setRoute({ screen, id });
       };
 
-      const onAddToCart    = (item)  => setCart(prev => [...prev, item]);
-      const onRemoveFromCart = (idx) => setCart(prev => prev.filter((_, i) => i !== idx));
+      const onAddToCart      = (item) => setCart(prev => [...prev, item]);
+      const onRemoveFromCart = (idx)  => setCart(prev => prev.filter((_, i) => i !== idx));
+      const onUpdateCartItem = (idx, qty) => {
+        if (qty < 1) { onRemoveFromCart(idx); return; }
+        setCart(prev => prev.map((item, i) => i === idx ? { ...item, qty } : item));
+      };
 
-      // Called by Admin when products are created/edited/deleted
       const onProductsChange = (newList) => {
         saveProducts(newList);
         setProducts(newList);
@@ -55,13 +58,16 @@
       let content;
       switch (route.screen) {
         case 'catalog':
-          content = <Catalog onNav={onNav} products={products}/>;
+          content = <Catalog onNav={onNav} products={products} onAddToCart={onAddToCart}/>;
+          break;
+        case 'favorites':
+          content = <Catalog onNav={onNav} products={products} onAddToCart={onAddToCart} favoritesOnly={true}/>;
           break;
         case 'product':
           content = <Product onNav={onNav} productId={route.id} onAddToCart={onAddToCart} products={products}/>;
           break;
         case 'cart':
-          content = <Cart onNav={onNav} cart={cart} onRemove={onRemoveFromCart}/>;
+          content = <Cart onNav={onNav} cart={cart} onRemove={onRemoveFromCart} onUpdateQty={onUpdateCartItem}/>;
           break;
         case 'dashboard':
           content = <Dashboard onNav={onNav}/>;
@@ -82,6 +88,8 @@
           <Header current={route.screen} onNav={onNav} cartCount={cart.length}/>
           {content}
           <Footer/>
+          <WhatsAppButton/>
+          <ScrollToTop/>
         </div>
       );
     }
