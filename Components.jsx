@@ -533,9 +533,45 @@ function Footer() {
   );
 }
 
+/* ── LoadingScreen ── */
+function LoadingScreen() {
+  return (
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'var(--bg)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '1.25rem',
+      zIndex: 9999,
+    }}>
+      <div style={{
+        width: 44,
+        height: 44,
+        border: '3px solid var(--border)',
+        borderTopColor: 'var(--vesto-champagne)',
+        borderRadius: '50%',
+        animation: 'spin 0.75s linear infinite',
+      }}/>
+      <span style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: '0.8rem',
+        fontWeight: 600,
+        letterSpacing: '0.14em',
+        textTransform: 'uppercase',
+        color: 'var(--fg-muted)',
+      }}>
+        Cargando VESTO…
+      </span>
+    </div>
+  );
+}
+
 Object.assign(window, {
   Icon, Button, Badge, Input,
   HeartBtn, ProductCard, ProductListRow, QuickViewModal,
-  Header, Footer, WhatsAppButton, ScrollToTop,
+  Header, Footer, WhatsAppButton, ScrollToTop, LoadingScreen,
   useWindowWidth, getFavorites, saveFavorites, toggleFavorite,
 });
