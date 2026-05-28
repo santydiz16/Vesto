@@ -105,7 +105,13 @@ function Admin({ onNav, products, onProductsChange }) {
   };
 
   const handleLogin = () => {
-    if (passInput === ADMIN_PASS) {
+    // Block access if ADMIN_PASS is not configured (empty string matches empty input — security hole)
+    if (!ADMIN_PASS) {
+      setPassError(true);
+      setTimeout(() => setPassError(false), 3000);
+      return;
+    }
+    if (passInput && passInput === ADMIN_PASS) {
       setAuthed(true);
     } else {
       setPassError(true);
@@ -142,7 +148,9 @@ function Admin({ onNav, products, onProductsChange }) {
             />
             {passError && (
               <div style={{ fontSize: 13, color: 'var(--vesto-coral)', textAlign: 'center', fontWeight: 500 }}>
-                Contraseña incorrecta.
+                {!ADMIN_PASS
+                  ? 'Panel no configurado. Definí VESTO_ADMIN_PASS en las variables de entorno.'
+                  : 'Contraseña incorrecta.'}
               </div>
             )}
             <Button variant="primary" size="lg" onClick={handleLogin}>Ingresar</Button>
