@@ -3,8 +3,8 @@
 function Landing({ onNav, products }) {
   const [audience, setAudience] = useState('emprendedora');
   const w = useWindowWidth();
-  const isMobile = w < 700;
-  const isTablet = w >= 700 && w < 1000;
+  const isMobile = w < 900;
+  const isTablet = w >= 900 && w < 1100;
 
   const featured = (products || PRODUCTS).slice(0, 4);
 

@@ -19,6 +19,9 @@
 <body>
   <div id="root"></div>
 
+  <!-- config.js está en .gitignore — contiene VESTO_ADMIN_PASS y nunca se sube al repo -->
+  <script src="config.js"></script>
+
   <!-- Order matters: Data first (exposes getProducts/saveProducts), then Components, then screens -->
   <script type="text/babel" src="Data.jsx"></script>
   <script type="text/babel" src="Components.jsx"></script>

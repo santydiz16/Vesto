@@ -503,7 +503,7 @@ function ScrollToTop() {
 // ===== FOOTER =====
 function Footer() {
   const w = useWindowWidth();
-  const isMobile = w < 768;
+  const isMobile = w < 900;
   return (
     <footer style={{ background:'var(--vesto-noche)', color:'var(--vesto-marfil)', marginTop:'var(--space-9)', padding:`64px var(--container-gutter) 32px` }}>
       <div style={{ maxWidth:'var(--container-max)', margin:'0 auto', display:'grid', gridTemplateColumns:isMobile?'1fr 1fr':'2fr 1fr 1fr 1fr 1fr', gap:isMobile?32:48, paddingBottom:48, borderBottom:'1px solid var(--border-inverse)' }}>

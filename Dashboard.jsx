@@ -1,28 +1,31 @@
 /* eslint-disable */
 
 function Dashboard({ onNav }) {
+  const w = useWindowWidth();
+  const isMobile = w < 900;
+
   return (
     <main style={{ padding: '40px var(--container-gutter) 64px' }}>
       <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto' }}>
         {/* Greeting */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40 }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'flex-end', justifyContent: 'space-between', gap: isMobile ? 20 : 0, marginBottom: 40 }}>
           <div>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 8 }}>Mi panel · Mayo 2026</div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 56, letterSpacing: '-0.025em' }}>Hola, Sofía.</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: isMobile ? 40 : 56, letterSpacing: '-0.025em' }}>Hola, Sofía.</h1>
             <p style={{ fontSize: 17, color: 'var(--fg-muted)', marginTop: 8 }}>Este mes vendiste <strong style={{ color: 'var(--fg)' }}>42 prendas</strong>. Vas un 28% arriba de abril.</p>
           </div>
           <Button variant="accent" iconAfter="arrowRight">Compartir mi tienda</Button>
         </div>
 
         {/* KPI ROW */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 40 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 16, marginBottom: 40 }}>
           <Kpi label="Facturación" value="$487.200" delta="+28%" deltaPositive />
           <Kpi label="Ganancia neta" value="$214.800" delta="+34%" deltaPositive />
           <Kpi label="Pedidos" value="42" delta="+9" deltaPositive />
           <Kpi label="Ticket promedio" value="$11.600" delta="−4%" />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '7fr 5fr', gap: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '7fr 5fr', gap: 24 }}>
           {/* Chart card */}
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: 28 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 24 }}>

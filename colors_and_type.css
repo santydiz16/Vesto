@@ -41,6 +41,7 @@
      SEMANTIC TOKENS (default = Oscuro Premium)
      Use these in components, not the raw palette names.
      ------------------------------------------------------------ */
+  --bg-rgb:             245, 240, 232;   /* RGB channels of --vesto-marfil, for rgba() usage */
   --bg:                 var(--vesto-marfil);
   --bg-card:            var(--vesto-marfil-soft);
   --bg-inverse:         var(--vesto-noche);
@@ -352,6 +353,7 @@ code, kbd, pre, samp {
    DARK MODE
    ============================================================ */
 [data-theme="dark"] {
+  --bg-rgb:          15, 15, 26;
   --bg:              #0F0F1A;
   --bg-card:         #1A1A2E;
   --bg-inverse:      #F5F0E8;

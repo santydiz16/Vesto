@@ -52,7 +52,7 @@ function Product({ onNav, productId, onAddToCart, products }) {
               )}
               {product.badge && <div style={{ position: 'absolute', top: 16, left: 16 }}><Badge variant={product.badgeVariant}>{product.badge}</Badge></div>}
               {margen > 0 && (
-                <div style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(22,163,74,0.9)', borderRadius: 4, padding: '4px 10px', backdropFilter: 'blur(4px)' }}>
+                <div style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(22,163,74,0.9)', borderRadius: 4, padding: '4px 10px', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>+{margen}% margen</span>
                 </div>
               )}

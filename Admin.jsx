@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-const ADMIN_PASS = 'vesto2026';
+const ADMIN_PASS = window.VESTO_ADMIN_PASS || '';
 
 const BG_PRESETS = [
   { label: 'Crema',         value: 'linear-gradient(180deg,#E8DFD0 0%,#D9CBB3 100%)' },
@@ -482,7 +482,7 @@ function Admin({ onNav, products, onProductsChange }) {
 function AdminOverlay({ children, onClose }) {
   return (
     <div
-      style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,46,0.65)', backdropFilter: 'blur(6px)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, overflowY: 'auto' }}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(26,26,46,0.65)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, overflowY: 'auto' }}
       onClick={onClose}
     >
       <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 620, maxHeight: '92vh', overflowY: 'auto', borderRadius: 16 }}>

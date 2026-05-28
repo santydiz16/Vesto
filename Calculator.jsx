@@ -7,6 +7,8 @@ function Calculator({ onNav, products }) {
   const [presetId, setPresetId] = useState('');
 
   const allProducts = products || getProducts();
+  const w       = useWindowWidth();
+  const isMobile = w < 900;
 
   // Parse Argentine number format (dots as thousands separator)
   const parseNum = (str) => {
@@ -72,10 +74,10 @@ function Calculator({ onNav, products }) {
       <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto' }}>
 
         {/* Page header */}
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 48 }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'flex-end', justifyContent: 'space-between', gap: isMobile ? 20 : 0, marginBottom: 48 }}>
           <div>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 8 }}>Herramienta gratuita</div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 56, letterSpacing: '-0.025em', lineHeight: 1.05, marginBottom: 12 }}>Calculadora de ganancias.</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: isMobile ? 40 : 56, letterSpacing: '-0.025em', lineHeight: 1.05, marginBottom: 12 }}>Calculadora de ganancias.</h1>
             <p style={{ fontSize: 16, color: 'var(--fg-muted)', maxWidth: 520, lineHeight: 1.55 }}>
               Encontrá el precio ideal y proyectá cuánto ganás antes de hacer el pedido. Podés cargar cualquier prenda del catálogo o ingresar tus propios números.
             </p>
@@ -83,7 +85,7 @@ function Calculator({ onNav, products }) {
           <Button variant="ghost" icon="bag" onClick={() => onNav('catalog')}>Ver catálogo</Button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 40, alignItems: 'start' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '5fr 7fr', gap: 40, alignItems: 'start' }}>
 
           {/* ── LEFT: INPUTS ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -172,7 +174,7 @@ function Calculator({ onNav, products }) {
                 {/* Main result card */}
                 <div style={{ background: 'var(--vesto-noche)', borderRadius: 16, padding: '32px 36px', color: 'var(--vesto-marfil)', position: 'relative', overflow: 'hidden' }}>
                   <div style={{ position: 'absolute', inset: 0, opacity: 0.06, backgroundImage: 'repeating-linear-gradient(0deg, rgba(245,240,232,0.5) 0 1px, transparent 1px 12px), repeating-linear-gradient(90deg, rgba(245,240,232,0.5) 0 1px, transparent 1px 12px)' }}></div>
-                  <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
+                  <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: 24 }}>
                     {/* Margen */}
                     <div>
                       <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--vesto-champagne)', marginBottom: 10 }}>Margen</div>
@@ -197,7 +199,7 @@ function Calculator({ onNav, products }) {
                 {/* Scenarios */}
                 <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
                   <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--fg-muted)', marginBottom: 20 }}>Escenarios de ganancia mensual</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 12 }}>
                     {scenarios.map(s => (
                       <div key={s.label} style={{ padding: 20, borderRadius: 8, textAlign: 'center', background: s.highlight ? 'rgba(26,26,46,0.06)' : 'transparent', border: `1px solid ${s.highlight ? 'var(--vesto-noche)' : 'var(--border)'}` }}>
                         <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: s.highlight ? 'var(--vesto-noche)' : 'var(--fg-muted)', marginBottom: 10 }}>{s.label}</div>
