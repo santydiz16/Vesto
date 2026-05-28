@@ -20,6 +20,13 @@ const BG_PRESETS = [
 const ALL_SIZES = ['XS','S','M','L','XL','XXL','36','38','40','42','44','46'];
 const BADGE_VARIANTS_LIST = ['accent','coral','ghost','success'];
 
+/** Strip HTML tags from user text input — prevents XSS stored in product names/badges */
+function sanitize(str) {
+  const div = document.createElement('div');
+  div.textContent = String(str || '');
+  return div.textContent;
+}
+
 const EMPTY_PRODUCT = () => ({
   id: '', name: '', category: 'buzos',
   sizes: ['S','M','L'],
@@ -153,21 +160,29 @@ function Admin({ onNav, products, onProductsChange }) {
   });
 
   /* ── PRODUCT ACTIONS ── */
-  const handleDelete = (id) => {
-    onProductsChange((products || []).filter(p => p.id !== id));
+  const handleDelete = async (id) => {
     setDeleteConfirm(null);
-    showToast('Producto eliminado.');
+    try {
+      await onProductsChange((products || []).filter(p => p.id !== id));
+      showToast('Producto eliminado.');
+    } catch(e) {
+      showToast('Error al eliminar. Intentá de nuevo.', 'error');
+    }
   };
 
-  const handleSave = (product) => {
+  const handleSave = async (product) => {
     const isNew = !product.id || product.id === '';
     const saved = isNew ? { ...product, id: 'p' + Date.now() } : product;
     const updated = isNew
       ? [...(products || []), saved]
       : (products || []).map(p => p.id === saved.id ? saved : p);
-    onProductsChange(updated);
-    setEditingProduct(null);
-    showToast(isNew ? 'Producto creado correctamente.' : 'Cambios guardados.');
+    setEditingProduct(null); // close modal immediately (optimistic)
+    try {
+      await onProductsChange(updated);
+      showToast(isNew ? 'Producto creado correctamente.' : 'Cambios guardados.');
+    } catch(e) {
+      showToast('Error al guardar. Revisá tu conexión.', 'error');
+    }
   };
 
   const handleExport = () => {
@@ -188,27 +203,32 @@ function Admin({ onNav, products, onProductsChange }) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       try {
         const data = JSON.parse(ev.target.result);
         if (Array.isArray(data) && data.length > 0) {
-          onProductsChange(data);
+          await onProductsChange(data);
           showToast(`${data.length} productos importados.`);
         } else {
           showToast('Archivo inválido: debe ser un array JSON con al menos un producto.', 'error');
         }
       } catch(err) {
-        showToast('Error al leer el archivo. Verificá que sea un JSON válido.', 'error');
+        showToast('Error al procesar el archivo. Verificá que sea un JSON válido.', 'error');
       }
     };
     reader.readAsText(file);
     e.target.value = '';
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (!window.confirm('¿Restaurar los productos de demo? Se borrarán todos tus cambios.')) return;
-    onProductsChange(resetProducts());
-    showToast('Catálogo restaurado a la versión demo.');
+    const seed = resetProducts(); // sync: clears localStorage, returns seed array
+    try {
+      await onProductsChange(seed);
+      showToast('Catálogo restaurado a la versión demo.');
+    } catch(e) {
+      showToast('Error al restaurar. Intentá de nuevo.', 'error');
+    }
   };
 
   /* ── RENDER ── */
@@ -917,6 +937,9 @@ function ProductForm({ product: initial, categories, attributes, onSave, onCance
     }
     onSave({
       ...form,
+      name:     sanitize(form.name),
+      badge:    sanitize(form.badge    || ''),
+      category: sanitize(form.category || ''),
       priceMay: Number(form.priceMay),
       pricePvp: Number(form.pricePvp) || 0,
       stock:    Number(form.stock)    || 0,
