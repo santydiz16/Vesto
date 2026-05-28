@@ -1,32 +1,29 @@
 /* eslint-disable */
-// VESTO data — seed + localStorage persistence.
+// VESTO data — Supabase primary, localStorage fallback, seed tertiary.
 
+// ── Seed data ────────────────────────────────────────────────────────────────
 const PRODUCTS_SEED = [
-  { id: 'p1',  name: 'Buzo oversize crema',           category: 'buzos',    sizes: ['S','M','L','XL'],          priceMay: 8900,  pricePvp: 14900, bg: 'linear-gradient(180deg,#E8DFD0 0%,#D9CBB3 100%)', badge: 'Novedad', badgeVariant: 'accent', stock: 42 },
-  { id: 'p2',  name: 'Jean wide leg tiro alto',       category: 'jeans',    sizes: ['36','38','40','42','44'],  priceMay: 12400, pricePvp: 19900, bg: 'linear-gradient(180deg,#3D3D5C 0%,#1A1A2E 100%)', badge: '-30%', badgeVariant: 'coral', stock: 28 },
-  { id: 'p3',  name: 'Vestido lino terracota',        category: 'vestidos', sizes: ['S','M','L'],               priceMay: 11200, pricePvp: 17900, bg: 'linear-gradient(180deg,#D89372 0%,#C1531A 100%)', stock: 16 },
-  { id: 'p4',  name: 'Remera básica algodón',         category: 'remeras',  sizes: ['XS','S','M','L','XL'],     priceMay: 4200,  pricePvp: 6900,  bg: 'linear-gradient(180deg,#F5F0E8 0%,#E5DCC9 100%)', stock: 120 },
-  { id: 'p5',  name: 'Pantalón sastrero negro',       category: 'pantalones', sizes: ['36','38','40','42'],     priceMay: 13500, pricePvp: 21900, bg: 'linear-gradient(180deg,#3D3D5C 0%,#111 100%)', stock: 22 },
-  { id: 'p6',  name: 'Camisa oversize rayada',        category: 'camisas',  sizes: ['S','M','L'],               priceMay: 7800,  pricePvp: 12500, bg: 'linear-gradient(180deg,#F2E8D9 0%,#8B5E3C 100%)', badge: 'Top vendido', badgeVariant: 'ghost', stock: 8 },
-  { id: 'p7',  name: 'Saco lana boucle',              category: 'sacos',    sizes: ['S','M','L'],               priceMay: 18900, pricePvp: 28900, bg: 'linear-gradient(180deg,#C9A96E 0%,#8B5E3C 100%)', badge: 'Pre-venta', badgeVariant: 'ghost', stock: 12 },
-  { id: 'p8',  name: 'Pollera midi plisada',          category: 'polleras', sizes: ['S','M','L'],               priceMay: 9600,  pricePvp: 15500, bg: 'linear-gradient(180deg,#5C7A5F 0%,#3D3D5C 100%)', stock: 18 },
+  { id: 'p1', name: 'Buzo oversize crema',      category: 'buzos',      sizes: ['S','M','L','XL'],          priceMay: 8900,  pricePvp: 14900, bg: 'linear-gradient(180deg,#E8DFD0 0%,#D9CBB3 100%)', badge: 'Novedad',     badgeVariant: 'accent', stock: 42 },
+  { id: 'p2', name: 'Jean wide leg tiro alto',   category: 'jeans',      sizes: ['36','38','40','42','44'],  priceMay: 12400, pricePvp: 19900, bg: 'linear-gradient(180deg,#3D3D5C 0%,#1A1A2E 100%)', badge: '-30%',        badgeVariant: 'coral',  stock: 28 },
+  { id: 'p3', name: 'Vestido lino terracota',    category: 'vestidos',   sizes: ['S','M','L'],               priceMay: 11200, pricePvp: 17900, bg: 'linear-gradient(180deg,#D89372 0%,#C1531A 100%)', stock: 16 },
+  { id: 'p4', name: 'Remera básica algodón',     category: 'remeras',    sizes: ['XS','S','M','L','XL'],     priceMay: 4200,  pricePvp: 6900,  bg: 'linear-gradient(180deg,#F5F0E8 0%,#E5DCC9 100%)', stock: 120 },
+  { id: 'p5', name: 'Pantalón sastrero negro',   category: 'pantalones', sizes: ['36','38','40','42'],        priceMay: 13500, pricePvp: 21900, bg: 'linear-gradient(180deg,#3D3D5C 0%,#111 100%)',    stock: 22 },
+  { id: 'p6', name: 'Camisa oversize rayada',    category: 'camisas',    sizes: ['S','M','L'],               priceMay: 7800,  pricePvp: 12500, bg: 'linear-gradient(180deg,#F2E8D9 0%,#8B5E3C 100%)', badge: 'Top vendido', badgeVariant: 'ghost',  stock: 8  },
+  { id: 'p7', name: 'Saco lana boucle',          category: 'sacos',      sizes: ['S','M','L'],               priceMay: 18900, pricePvp: 28900, bg: 'linear-gradient(180deg,#C9A96E 0%,#8B5E3C 100%)', badge: 'Pre-venta',   badgeVariant: 'ghost',  stock: 12 },
+  { id: 'p8', name: 'Pollera midi plisada',      category: 'polleras',   sizes: ['S','M','L'],               priceMay: 9600,  pricePvp: 15500, bg: 'linear-gradient(180deg,#5C7A5F 0%,#3D3D5C 100%)', stock: 18 },
 ];
 
 const CATEGORIES = [
-  { id: 'todos',      label: 'Todos', count: 2147 },
+  { id: 'todos',      label: 'Todos',            count: 2147 },
   { id: 'buzos',      label: 'Buzos & sweaters', count: 184 },
-  { id: 'jeans',      label: 'Jeans', count: 92 },
-  { id: 'vestidos',   label: 'Vestidos', count: 156 },
-  { id: 'remeras',    label: 'Remeras', count: 312 },
-  { id: 'camisas',    label: 'Camisas', count: 87 },
-  { id: 'pantalones', label: 'Pantalones', count: 128 },
-  { id: 'polleras',   label: 'Polleras', count: 64 },
-  { id: 'sacos',      label: 'Sacos & abrigos', count: 73 },
+  { id: 'jeans',      label: 'Jeans',            count: 92 },
+  { id: 'vestidos',   label: 'Vestidos',         count: 156 },
+  { id: 'remeras',    label: 'Remeras',          count: 312 },
+  { id: 'camisas',    label: 'Camisas',          count: 87 },
+  { id: 'pantalones', label: 'Pantalones',       count: 128 },
+  { id: 'polleras',   label: 'Polleras',         count: 64 },
+  { id: 'sacos',      label: 'Sacos & abrigos',  count: 73 },
 ];
-
-const PRODUCTS_KEY    = 'vesto_products_v1';
-const CATEGORIES_KEY  = 'vesto_categories_v1';
-const ATTRIBUTES_KEY  = 'vesto_attributes_v1';
 
 const CATEGORIES_SEED = [
   { id: 'todos',      label: 'Todos',            emoji: '✦',  active: true },
@@ -40,56 +37,172 @@ const CATEGORIES_SEED = [
   { id: 'sacos',      label: 'Sacos & abrigos',  emoji: '🧣', active: true },
 ];
 
+// ── localStorage keys ────────────────────────────────────────────────────────
+const PRODUCTS_KEY   = 'vesto_products_v1';
+const CATEGORIES_KEY = 'vesto_categories_v1';
+const ATTRIBUTES_KEY = 'vesto_attributes_v1';
+
+// ── Supabase client ───────────────────────────────────────────────────────────
+// Reads from config.js (git-ignored). If not configured, falls back to
+// localStorage → seed automatically. No errors thrown when unconfigured.
+const _SUPABASE_URL  = window.VESTO_SUPABASE_URL      || '';
+const _SUPABASE_KEY  = window.VESTO_SUPABASE_ANON_KEY || '';
+const _SB_READY      = Boolean(_SUPABASE_URL && _SUPABASE_KEY && typeof supabase !== 'undefined');
+let sb = null;
+if (_SB_READY) {
+  try {
+    sb = supabase.createClient(_SUPABASE_URL, _SUPABASE_KEY);
+    console.log('VESTO: Supabase client ready ✓');
+  } catch(e) {
+    console.warn('VESTO: Supabase init failed, using localStorage fallback', e);
+  }
+} else {
+  console.log('VESTO: Supabase not configured — using localStorage/seed fallback');
+}
+
+// ── Row mappers ───────────────────────────────────────────────────────────────
+// DB uses snake_case columns; JS objects use camelCase properties.
+function dbRowToProduct(row) {
+  return {
+    id:           row.id,
+    name:         row.name,
+    category:     row.category,
+    sizes:        row.sizes         || [],
+    priceMay:     row.price_may,
+    pricePvp:     row.price_pvp,
+    bg:           row.bg            || '',
+    badge:        row.badge         || '',
+    badgeVariant: row.badge_variant || '',
+    image:        row.image         || '',
+    stock:        row.stock         || 0,
+  };
+}
+
+function productToDbRow(p, index) {
+  return {
+    id:            p.id,
+    name:          p.name,
+    category:      p.category       || '',
+    sizes:         p.sizes          || [],
+    price_may:     Number(p.priceMay)  || 0,
+    price_pvp:     Number(p.pricePvp)  || 0,
+    bg:            p.bg             || '',
+    badge:         p.badge          || '',
+    badge_variant: p.badgeVariant   || '',
+    image:         p.image          || '',
+    stock:         Number(p.stock)  || 0,
+    sort_order:    typeof index === 'number' ? index : 0,
+    updated_at:    new Date().toISOString(),
+  };
+}
+
+// ── Products ──────────────────────────────────────────────────────────────────
+
+/**
+ * Async. Fetch priority: Supabase → localStorage → PRODUCTS_SEED.
+ * On Supabase success, also writes to localStorage as an offline cache.
+ */
+async function getProducts() {
+  // 1. Supabase
+  if (sb) {
+    try {
+      const { data, error } = await sb
+        .from('products')
+        .select('*')
+        .order('sort_order', { ascending: true });
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const mapped = data.map(dbRowToProduct);
+        try { localStorage.setItem(PRODUCTS_KEY, JSON.stringify(mapped)); } catch(_) {}
+        return mapped;
+      }
+    } catch(e) {
+      console.warn('VESTO: Supabase getProducts failed, falling back to localStorage', e.message);
+    }
+  }
+  // 2. localStorage
+  try {
+    const s = localStorage.getItem(PRODUCTS_KEY);
+    if (s) {
+      const p = JSON.parse(s);
+      if (Array.isArray(p) && p.length > 0) return p;
+    }
+  } catch(_) {}
+  // 3. Seed
+  return [...PRODUCTS_SEED];
+}
+
+/**
+ * Async. Saves to localStorage immediately (offline cache), then upserts to Supabase.
+ * Deletes DB rows whose IDs are no longer in the list (handles resets + deletions).
+ * Throws on Supabase write failure so callers can show error toasts.
+ */
+async function saveProducts(list) {
+  // Always persist to localStorage first (instant, offline-safe)
+  try { localStorage.setItem(PRODUCTS_KEY, JSON.stringify(list)); } catch(_) {}
+
+  if (!sb) return; // no Supabase client — localStorage only, done
+
+  const rows = list.map((p, i) => productToDbRow(p, i));
+
+  // Upsert all products in the new list
+  if (rows.length > 0) {
+    const { error: upsertErr } = await sb
+      .from('products')
+      .upsert(rows, { onConflict: 'id' });
+    if (upsertErr) {
+      console.error('VESTO: Supabase upsert error', upsertErr);
+      throw upsertErr;
+    }
+  }
+
+  // Delete products no longer in the list (handles delete + reset operations)
+  const currentIds = new Set(list.map(p => p.id));
+  const { data: existing, error: fetchErr } = await sb.from('products').select('id');
+  if (fetchErr) throw fetchErr;
+  const toDelete = (existing || []).map(r => r.id).filter(id => !currentIds.has(id));
+  if (toDelete.length > 0) {
+    const { error: delErr } = await sb.from('products').delete().in('id', toDelete);
+    if (delErr) {
+      console.error('VESTO: Supabase delete error', delErr);
+      throw delErr;
+    }
+  }
+}
+
+/** Sync. Clears localStorage cache and returns a fresh copy of the seed array. */
+function resetProducts() {
+  try { localStorage.removeItem(PRODUCTS_KEY); } catch(_) {}
+  return [...PRODUCTS_SEED];
+}
+
+// ── Categories (sync — localStorage only) ────────────────────────────────────
 function getCategories() {
   try {
     const s = localStorage.getItem(CATEGORIES_KEY);
     if (s) { const p = JSON.parse(s); if (Array.isArray(p) && p.length) return p; }
-  } catch(e) {}
+  } catch(_) {}
   return [...CATEGORIES_SEED];
 }
 function saveCategories(list) {
-  try { localStorage.setItem(CATEGORIES_KEY, JSON.stringify(list)); } catch(e) {}
+  try { localStorage.setItem(CATEGORIES_KEY, JSON.stringify(list)); } catch(_) {}
 }
 
+// ── Attributes (sync — localStorage only) ────────────────────────────────────
 function getAttributes() {
   try {
     const s = localStorage.getItem(ATTRIBUTES_KEY);
     if (s) { const p = JSON.parse(s); if (Array.isArray(p)) return p; }
-  } catch(e) {}
+  } catch(_) {}
   return [];
 }
 function saveAttributes(list) {
-  try { localStorage.setItem(ATTRIBUTES_KEY, JSON.stringify(list)); } catch(e) {}
+  try { localStorage.setItem(ATTRIBUTES_KEY, JSON.stringify(list)); } catch(_) {}
 }
 
-function getProducts() {
-  try {
-    const stored = localStorage.getItem(PRODUCTS_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    }
-  } catch(e) {}
-  return [...PRODUCTS_SEED];
-}
-
-function saveProducts(list) {
-  try {
-    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(list));
-  } catch(e) {
-    console.error('VESTO: error saving products', e);
-  }
-}
-
-function resetProducts() {
-  try { localStorage.removeItem(PRODUCTS_KEY); } catch(e) {}
-  return [...PRODUCTS_SEED];
-}
-
-// Legacy global — used by Dashboard (mock). Updated by App via products state.
-const PRODUCTS = getProducts();
-
-window.PRODUCTS        = PRODUCTS;
+// ── Legacy globals (backward compat) ─────────────────────────────────────────
+// window.PRODUCTS is populated by App after async load completes.
+// Until then it holds the seed so Dashboard (mock) has something to render.
+window.PRODUCTS        = [...PRODUCTS_SEED];
 window.PRODUCTS_SEED   = PRODUCTS_SEED;
 window.CATEGORIES      = CATEGORIES;
 window.CATEGORIES_SEED = CATEGORIES_SEED;
