@@ -1,0 +1,10 @@
+{
+  "name": "vesto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VESTO — Plataforma B2B mayorista de indumentaria",
+  "scripts": {
+    "build": "node scripts/generate-config.js",
+    "start": "python3 -m http.server 3334"
+  }
+}
