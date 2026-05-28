@@ -29,37 +29,41 @@ function Catalog({ onNav, products, favoritesOnly, onAddToCart }) {
   const toggleSizeFilter = (size) =>
     setSizeFilter(prev => prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]);
 
-  // ── Filter pipeline ──
-  let visible = category === 'todos' ? allProducts : allProducts.filter(p => p.category === category);
+  // ── Filter pipeline (memoized) ────────────────────────────────────────────
+  const visible = React.useMemo(() => {
+    let result = category === 'todos' ? allProducts : allProducts.filter(p => p.category === category);
 
-  if (favoritesOnly) {
-    const favs = getFavorites();
-    visible = visible.filter(p => favs.includes(p.id));
-  }
+    if (favoritesOnly) {
+      const favs = getFavorites();
+      result = result.filter(p => favs.includes(p.id));
+    }
 
-  if (search.trim()) {
-    const q = search.toLowerCase();
-    visible = visible.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-  }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+    }
 
-  if (priceFilters.length > 0) {
-    visible = visible.filter(p =>
-      priceFilters.some(label => {
-        const range = priceRanges.find(r => r.label === label);
-        return range && p.priceMay >= range.min && p.priceMay < range.max;
-      })
+    if (priceFilters.length > 0) {
+      result = result.filter(p =>
+        priceFilters.some(label => {
+          const range = priceRanges.find(r => r.label === label);
+          return range && p.priceMay >= range.min && p.priceMay < range.max;
+        })
+      );
+    }
+
+    if (sizeFilter.length > 0) {
+      result = result.filter(p => p.sizes && sizeFilter.some(s => p.sizes.includes(s)));
+    }
+
+    if (sort === 'Precio: menor a mayor') return [...result].sort((a, b) => a.priceMay - b.priceMay);
+    if (sort === 'Precio: mayor a menor') return [...result].sort((a, b) => b.priceMay - a.priceMay);
+    if (sort === 'Mayor margen')          return [...result].sort((a, b) =>
+      ((b.pricePvp - b.priceMay) / b.pricePvp) - ((a.pricePvp - a.priceMay) / a.pricePvp)
     );
-  }
 
-  if (sizeFilter.length > 0) {
-    visible = visible.filter(p => p.sizes && sizeFilter.some(s => p.sizes.includes(s)));
-  }
-
-  if (sort === 'Precio: menor a mayor') visible = [...visible].sort((a, b) => a.priceMay - b.priceMay);
-  if (sort === 'Precio: mayor a menor') visible = [...visible].sort((a, b) => b.priceMay - a.priceMay);
-  if (sort === 'Mayor margen')          visible = [...visible].sort((a, b) =>
-    ((b.pricePvp - b.priceMay) / b.pricePvp) - ((a.pricePvp - a.priceMay) / a.pricePvp)
-  );
+    return result;
+  }, [allProducts, category, favoritesOnly, search, priceFilters, sizeFilter, sort]);
 
   const currentCat = catList.find(c => c.id === category) || catList[0];
 
