@@ -10,6 +10,7 @@
     *, *::before, *::after { box-sizing: border-box; }
     body { min-height: 100vh; }
     img { max-width: 100%; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -18,6 +19,11 @@
 </head>
 <body>
   <div id="root"></div>
+
+  <!-- Supabase JS v2 — must load before config.js and Data.jsx -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"
+          integrity="sha384-tD6X9wDfTRdKpuPoHFZrVW2RXjSYSWjLBPWXxpHprWWl9eaHlwl05aRjHsiKF97n"
+          crossorigin="anonymous"></script>
 
   <!-- config.js está en .gitignore — contiene VESTO_ADMIN_PASS y nunca se sube al repo -->
   <script src="config.js"></script>
