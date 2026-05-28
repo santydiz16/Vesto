@@ -40,29 +40,50 @@
   <script type="text/babel" src="Admin.jsx"></script>
 
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useEffect, useCallback } = React;
 
     function App() {
       const [route,    setRoute]    = useState({ screen: 'landing', id: null });
       const [cart,     setCart]     = useState([]);
-      const [products, setProducts] = useState(() => getProducts());
+      const [products, setProducts] = useState([]);
+      const [loading,  setLoading]  = useState(true);
 
-      const onNav = (screen, id) => {
+      // ── Async product load on mount ─────────────────────────────────────
+      useEffect(() => {
+        getProducts()
+          .then(data => {
+            setProducts(data);
+            window.PRODUCTS = data; // update legacy global for Dashboard mock
+          })
+          .catch(err => {
+            console.error('VESTO: initial load failed, using seed', err);
+            const seed = [...PRODUCTS_SEED];
+            setProducts(seed);
+            window.PRODUCTS = seed;
+          })
+          .finally(() => setLoading(false));
+      }, []);
+
+      const onNav = useCallback((screen, id) => {
         window.scrollTo({ top: 0, behavior: 'instant' });
         setRoute({ screen, id });
-      };
+      }, []);
 
-      const onAddToCart      = (item) => setCart(prev => [...prev, item]);
-      const onRemoveFromCart = (idx)  => setCart(prev => prev.filter((_, i) => i !== idx));
-      const onUpdateCartItem = (idx, qty) => {
+      const onAddToCart      = useCallback((item) => setCart(prev => [...prev, item]), []);
+      const onRemoveFromCart = useCallback((idx)  => setCart(prev => prev.filter((_, i) => i !== idx)), []);
+      const onUpdateCartItem = useCallback((idx, qty) => {
         if (qty < 1) { onRemoveFromCart(idx); return; }
         setCart(prev => prev.map((item, i) => i === idx ? { ...item, qty } : item));
-      };
+      }, [onRemoveFromCart]);
 
-      const onProductsChange = (newList) => {
-        saveProducts(newList);
+      // ── Async product save — optimistic update then Supabase write ──────
+      const onProductsChange = useCallback(async (newList) => {
         setProducts(newList);
-      };
+        window.PRODUCTS = newList;
+        await saveProducts(newList); // throws on Supabase error (Admin handles it)
+      }, []);
+
+      if (loading) return <LoadingScreen />;
 
       let content;
       switch (route.screen) {
