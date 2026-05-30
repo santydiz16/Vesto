@@ -465,17 +465,35 @@ function Header({ current, onNav, cartCount = 0 }) {
 }
 
 // ===== WHATSAPP FLOATING BUTTON =====
-function WhatsAppButton({ phone = '5491100000000', message = '¡Hola! Quiero más info sobre el catálogo VESTO.' }) {
+function WhatsAppButton({ message = '¡Hola! Quiero más info sobre el catálogo VESTO.' }) {
+  const phone = window.VESTO_WHATSAPP || '';
   const [show, setShow] = useState(false);
+
   useEffect(() => {
     const h = () => setShow(window.scrollY > 250);
-    window.addEventListener('scroll', h, { passive:true });
+    window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
+
+  if (!phone) return null; // hidden until VESTO_WHATSAPP is configured
+
   return (
-    <a href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer"
-      style={{ position:'fixed', bottom:28, right:28, zIndex:99, width:52, height:52, borderRadius:'50%', background:'#25D366', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 20px rgba(37,211,102,0.5)', textDecoration:'none', opacity:show?1:0, transform:show?'scale(1)':'scale(0.8)', transition:'opacity 280ms, transform 280ms', pointerEvents:show?'auto':'none' }}
-      title="Consultar por WhatsApp">
+    <a
+      href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        position: 'fixed', bottom: 28, right: 28, zIndex: 99,
+        width: 52, height: 52, borderRadius: '50%',
+        background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxShadow: '0 4px 20px rgba(37,211,102,0.5)', textDecoration: 'none',
+        opacity: show ? 1 : 0,
+        transform: show ? 'scale(1)' : 'scale(0.8)',
+        transition: 'opacity 280ms, transform 280ms',
+        pointerEvents: show ? 'auto' : 'none',
+      }}
+      title="Consultar por WhatsApp"
+    >
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/>
       </svg>
