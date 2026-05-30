@@ -213,3 +213,4 @@ window.getCategories   = getCategories;
 window.saveCategories  = saveCategories;
 window.getAttributes   = getAttributes;
 window.saveAttributes  = saveAttributes;
+window.sb              = sb; // Supabase client — null if not configured; used by Admin ImageUploader
