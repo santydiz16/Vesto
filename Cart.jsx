@@ -128,8 +128,7 @@ function Cart({ onNav, cart, onRemove, onUpdateQty }) {
               <div style={{ fontSize: 12, color: 'var(--fg-muted)' }}>Si vendés todo al PVP sugerido.</div>
             </div>
 
-            <Button variant="primary" size="lg" iconAfter="arrowRight" style={{ width: '100%', marginTop: 20 }}>Confirmar pedido</Button>
-            <div style={{ fontSize: 12, color: 'var(--fg-muted)', textAlign: 'center', marginTop: 12 }}>Pagás con MercadoPago o transferencia.</div>
+            <WhatsAppCheckoutButton cart={cart} />
           </aside>
         </div>
       </div>
@@ -143,6 +142,69 @@ function CartRow({ label, value }) {
       <span style={{ color: 'var(--fg-muted)' }}>{label}</span>
       <span style={{ color: 'var(--fg)' }}>{value}</span>
     </div>
+  );
+}
+
+function WhatsAppCheckoutButton({ cart }) {
+  const phone = window.VESTO_WHATSAPP || '';
+
+  const subtotal = cart.reduce((acc, i) => acc + i.priceMay * i.qty, 0);
+  const envio    = subtotal >= FREE_SHIPPING_MIN ? 0 : 2800;
+  const total    = subtotal + envio;
+
+  const lines = cart
+    .map(i => `• ${i.name} × ${i.qty} = $${(i.priceMay * i.qty).toLocaleString('es-AR')}`)
+    .join('\n');
+
+  const shippingLine = envio === 0
+    ? '\n🚚 Envío: *Gratis*'
+    : `\n🚚 Envío: $${envio.toLocaleString('es-AR')}`;
+
+  const msg = `🛍️ *Nuevo pedido VESTO*\n\n${lines}${shippingLine}\n\n📦 *Total: $${total.toLocaleString('es-AR')}*`;
+  const url = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}` : null;
+
+  if (!url) {
+    return (
+      <div style={{ marginTop: 20 }}>
+        <button
+          disabled
+          style={{
+            width: '100%', padding: '14px 24px',
+            background: 'var(--border)', color: 'var(--fg-muted)',
+            border: 'none', borderRadius: 8,
+            fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-body)',
+            cursor: 'not-allowed', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', gap: 10, boxSizing: 'border-box',
+          }}>
+          <Icon name="whatsapp" size={18} color="var(--fg-muted)"/>
+          Confirmar pedido
+        </button>
+        <div style={{ fontSize: 12, color: 'var(--fg-muted)', textAlign: 'center', marginTop: 8, lineHeight: 1.5 }}>
+          Número de WhatsApp no configurado aún.
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+        width: '100%', marginTop: 20, padding: '14px 24px',
+        background: '#25D366', color: '#fff', borderRadius: 8,
+        fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-body)',
+        textDecoration: 'none', boxSizing: 'border-box',
+        transition: 'background 180ms',
+      }}
+      onMouseEnter={e => e.currentTarget.style.background = '#1ebe5d'}
+      onMouseLeave={e => e.currentTarget.style.background = '#25D366'}
+    >
+      <Icon name="whatsapp" size={20} color="#fff"/>
+      Confirmar por WhatsApp
+    </a>
   );
 }
 
