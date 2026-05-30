@@ -1164,9 +1164,12 @@ function ImageUploader({ value, onChange }) {
     if (!file || !file.type.startsWith('image/')) return;
     setLoading(true);
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      const img = new Image();
-      img.onload = () => {
+    reader.onload = async (ev) => {
+      try {
+        // 1. Load and resize image on canvas (max 1000px, 85% JPEG quality)
+        const img = new Image();
+        await new Promise(resolve => { img.onload = resolve; img.src = ev.target.result; });
+
         const MAX = 1000;
         let w = img.width, h = img.height;
         if (w > MAX || h > MAX) {
@@ -1176,11 +1179,37 @@ function ImageUploader({ value, onChange }) {
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+        // 2. Try Supabase Storage upload (when client is configured)
+        const sbClient = window.sb;
+        if (sbClient) {
+          try {
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+            const fileName = `products/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+            const { data, error } = await sbClient.storage
+              .from('product-images')
+              .upload(fileName, blob, { contentType: 'image/jpeg', cacheControl: '31536000', upsert: false });
+            if (!error) {
+              const { data: { publicUrl } } = sbClient.storage
+                .from('product-images')
+                .getPublicUrl(data.path);
+              onChange(publicUrl);
+              return; // uploaded successfully — skip base64 fallback
+            }
+            console.warn('VESTO: Storage upload failed, falling back to base64', error);
+          } catch(storageErr) {
+            console.warn('VESTO: Storage error, falling back to base64', storageErr);
+          }
+        }
+
+        // 3. Fallback: base64 (Supabase not configured, or upload failed)
         const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
         onChange(dataUrl);
+      } catch(e) {
+        console.error('VESTO: processFile error', e);
+      } finally {
         setLoading(false);
-      };
-      img.src = ev.target.result;
+      }
     };
     reader.readAsDataURL(file);
   };
